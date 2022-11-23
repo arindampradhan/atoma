@@ -1,31 +1,29 @@
-# Puppeteer Boilerplate 
-![](https://img.shields.io/github/license/hellosurbhi/puppeteer-boilerplate) 
-![](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fhellosurbhi%2Fpuppeteer-boilerplate)
-<hr />
-Starter code for puppeteer projects of any complexity. 
+# Resources
 
-**npm module coming soon!**
+### Colorize
 
-## To use
+- https://petalica.com/index_en.html
+- https://hotpot.ai/colorize-picture
 
-On your command line
+## Remove Background
 
-* Create a new directory with the name of your project ``mkdir {project-name}``
+- https://www.remove.bg/upload
+- https://zyro.com/in/tools/image-background-remover
 
-* Clone the repo to your local machine ``git clone {url} {project-name} ``
+## Image transform
 
-<img src="https://github.com/hellosurbhi/puppeteer-starter-code/blob/master/clone-link-image.png" width="300" height="170">
+- https://vectorizer.ai/
+- https://zyro.com/in/tools/image-upscaler
 
-* Open project in code editor ``cd {project-name} && code . ``
 
-**Note: To setup ``code .`` shortcut for VSCode on your local machine, follow** [these instructions](https://code.visualstudio.com/docs/setup/mac)
+## Remove Watermark
 
-* Run ``npm install``
+- https://www.watermarkremover.io/upload
 
-* To confirm all is working, run ``npm run start``. It should take you to my personal portfolio.
+## Remove Objects
 
-* Change the url in ``pageScraper.js`` to your desired link. Add your code in the same file and get scraping!
+- https://cleanup.pictures/
 
-## Basic Commands 
+## Autogenerate Images
 
-* Force end scripts by pressing ``CTRL + C``
+- https://labs.openai.com/
