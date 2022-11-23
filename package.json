@@ -1,0 +1,15 @@
+{
+  "name": "atoma",
+  "version": "1.0.0",
+  "description": "Image automation software",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src"
+  },
+  "author": "arindampradhan",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^19.3.0"
+  }
+}
