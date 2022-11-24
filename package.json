@@ -5,11 +5,13 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src"
+    "dev": "NODE_ENV=development && node src/index.js",
+    "start": "node src/index.js"
   },
   "author": "arindampradhan",
   "license": "ISC",
   "dependencies": {
+    "fs-extra": "^10.1.0",
     "puppeteer": "^19.3.0"
   }
 }
