@@ -1,7 +1,7 @@
 {
   "name": "atoma",
   "version": "1.0.0",
-  "description": "Image automation software",
+  "description": "Image Automation software",
   "main": "src/index.js",
   "scripts": {
     "prepare": "husky install",
