@@ -135,5 +135,4 @@ dist
 !/**/.gitkeep
 
 /.idea
-/.vscode
 .DS_Store
