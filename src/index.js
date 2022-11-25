@@ -1,5 +1,4 @@
-const colorize = require('./modules/colorize')
-const { onProducerChange } = require('./utils/watchers')
+const colorize = require("./modules/colorize");
+const { onProducerChange } = require("./utils/watchers");
 
-colorize()
-
+colorize();

@@ -136,3 +136,6 @@ dist
 
 /.idea
 .DS_Store
+image-space/**/*.jpg
+image-space/**/*.jpeg
+image-space/**/*.png

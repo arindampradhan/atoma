@@ -4,12 +4,11 @@ const {
   getFileNameFromHref,
   getExtensionFromBase64,
 } = require("./helpers");
-const puppeteer = require('puppeteer');
-const https = require('https')
-const fs = require('fs')
+const puppeteer = require("puppeteer");
+const https = require("https");
+const fs = require("fs");
 const { v4 } = require("uuid");
 const path = require("path");
-
 
 const configureBrower = async ({ url }) => {
   const browser = await puppeteer.launch({
@@ -22,29 +21,36 @@ const configureBrower = async ({ url }) => {
 };
 
 function downloadWithUrl(imgUrl, dest, { preserveName = false }) {
-	return new Promise((resolve, reject) => {
-			https.get(imgUrl, (res) => {
-					const fileExt = getExtensionFromHref(imgUrl);
-					const fileName = preserveName ? getFileNameFromHref() : `${v4()}.${fileExt}`;
-					const stream = fs.createWriteStream(`${dest}/${fileName}`);
-					res.pipe(stream);
-					stream.on("finish", () => {
-						stream.close();
-						resolve('Success');
-					});
-					stream.on('error', (e) => {
-						reject(e);
-					})
-				});
-	});
-}  
+  return new Promise((resolve, reject) => {
+    https.get(imgUrl, (res) => {
+      const fileExt = getExtensionFromHref(imgUrl);
+      const fileName = preserveName
+        ? getFileNameFromHref()
+        : `${v4()}.${fileExt}`;
+      const stream = fs.createWriteStream(`${dest}/${fileName}`);
+      res.pipe(stream);
+      stream.on("finish", () => {
+        stream.close();
+        resolve("Success");
+      });
+      stream.on("error", (e) => {
+        reject(e);
+      });
+    });
+  });
+}
 function downloadWithBase64(base64, dest) {
   return new Promise((resolve, reject) => {
-		const fileExt = getExtensionFromBase64(base64);
-		const fileName = `${v4()}.${fileExt}`;
-		const base64Data = base64.replace(/^data:image\/png;base64,/, "");
-		
-		const fileDest = path.resolve(path.join(dest, fileName));
+    const fileExt = getExtensionFromBase64(base64);
+    const fileName = `${v4()}.${fileExt}`;
+    let base64Data = base64
+      .replace(/^data:image\/png;base64,/, "")
+      .replace(/^data:image\/jpeg;base64,/, "")
+      .replace(/^data:image\/jpg;base64,/, "");
+    base64Data += base64Data.replace("+", " ");
+    binaryData = new Buffer(base64Data, "base64").toString("binary");
+
+    const fileDest = path.resolve(path.join(dest, fileName));
     fs.writeFile(fileDest, base64Data, "base64", (err) => {
       if (err) {
         reject(err);
@@ -53,7 +59,7 @@ function downloadWithBase64(base64, dest) {
       }
     });
   });
-}  
+}
 
 module.exports = {
   configureBrower,
