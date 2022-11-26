@@ -15,13 +15,13 @@
     "axios": "^1.2.0",
     "fs-extra": "^10.1.0",
     "is-base64": "^1.1.0",
-    "node-fetch": "^2.6.7",
     "puppeteer": "^19.3.0",
     "puppeteer-extra": "^3.3.4",
     "uuid": "^9.0.0"
   },
   "lint-staged": {
-    "*": "prettier --write"
+    "*.{js,ts}": "eslint --fix",
+    "*.{json,md,txt}": "prettier --write"
   },
   "prettier": {
     "trailingComma": "es5",
@@ -34,11 +34,48 @@
       "@commitlint/config-conventional"
     ]
   },
+  "eslintConfig": {
+    "env": {
+      "commonjs": true,
+      "es6": false,
+      "node": true
+    },
+    "extends": [
+      "airbnb-base",
+      "prettier",
+      "plugin:node/recommended"
+    ],
+    "globals": {
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+      "ecmaVersion": 2015
+    },
+    "plugins": [
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      "no-unused-vars": "warn",
+      "no-console": "off",
+      "func-names": "off",
+      "no-plusplus": "off",
+      "no-process-exit": "off",
+      "class-methods-use-this": "off"
+    }
+  },
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",
     "@commitlint/config-conventional": "^17.3.0",
+    "eslint": "^8.28.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.4",
-    "prettier": "2.8.0"
+    "prettier": "^2.8.0"
   }
 }
