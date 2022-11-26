@@ -28,6 +28,10 @@ const getExtensionFromHref = (url) => {
   return filename.split('.').pop();
 };
 
+const getExtensionFromFileName = (fileName) => {
+  return path.extname(fileName).replace('.', '');
+};
+
 const getExtensionFromBase64 = (base64Data) => {
   return base64Data.substring(
     'data:image/'.length,
@@ -39,14 +43,17 @@ const getKeyByValue = (object, value) => {
   return Object.keys(object).find((key) => object[key] === value);
 };
 
-async function waitUntil(condition) {
-  return await new Promise((resolve) => {
-    const interval = setInterval(() => {
-      if (condition) {
-        resolve('foo');
+async function waitUntil(condition, freq = 1000) {
+  if (typeof condition !== 'function') {
+    throw 'Condition must be function defination.';
+  }
+  return await new Promise(async (resolve) => {
+    const interval = setInterval(async () => {
+      if (await condition()) {
+        resolve(condition);
         clearInterval(interval);
       }
-    }, 1000);
+    }, freq);
   });
 }
 
@@ -57,6 +64,7 @@ module.exports = {
   getFileNameFromHref,
   getExtensionFromHref,
   getExtensionFromBase64,
+  getExtensionFromFileName,
   getKeyByValue,
   waitUntil,
   timeout,

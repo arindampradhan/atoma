@@ -37,7 +37,7 @@ async function colorize(fileName) {
   hotpot.setOriginalFileName(fileName);
 
   await hotpot.uploadImage(fileName); // 2
-  await hotpot.downloadImage();
+  await hotpot.downloadImage(page);
 
   return {
     browser,

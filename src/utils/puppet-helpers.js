@@ -8,16 +8,18 @@ const {
 } = require('./helpers');
 const puppeteer = require('puppeteer');
 const https = require('https');
-const fsStatic = require('fs');
+const fs = require('fs');
 const { v4 } = require('uuid');
 const path = require('path');
 const axios = require('axios');
+const fetch = require('node-fetch');
 
 const configureBrower = async ({ url }) => {
   const browser = await puppeteer.launch({
     headless: isProduction(),
     slowMo: 50,
   });
+
   const page = await browser.newPage();
   await page.goto(url, { waitUntil: 'networkidle2' });
   return { page, browser };
@@ -58,7 +60,7 @@ function downloadWithBase64(base64, dest) {
     binaryData = new Buffer(base64Data, 'base64').toString('binary');
 
     const fileDest = path.resolve(path.join(dest, fileName));
-    fsStatic.writeFile(fileDest, base64Data, 'base64', (err) => {
+    fs.writeFile(fileDest, base64Data, 'base64', (err) => {
       if (err) {
         reject(err);
       } else {
@@ -71,23 +73,8 @@ function downloadWithBase64(base64, dest) {
   });
 }
 
-const downloadWithBlobUrl = async (
-  blobUrl,
-  dest,
-  { preserveName = false, ext = '.png' }
-) => {
-  const fileName = preserveName ? getFileNameFromHref() : `${v4()}${ext}`;
-  const fileDest = `${dest}/${fileName}`;
-  const fs = fsStatic.promises;
-  const config = { responseType: 'blob' };
-  // FIXME: not downloading properly
-  const res = await axios.get(blobUrl, config);
-  await fs.writeFile(fileDest, res.data);
-};
-
 module.exports = {
   configureBrower,
   downloadWithUrl,
-  downloadWithBlobUrl,
   downloadWithBase64,
 };
