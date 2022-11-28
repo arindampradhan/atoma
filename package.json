@@ -7,7 +7,8 @@
     "prepare": "husky install",
     "test": "echo \"⚠️ Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=development && node src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "lint": "eslint --fix src"
   },
   "author": "arindampradhan <arindampradhan10@gmail.com>",
   "license": "ISC",
@@ -20,8 +21,7 @@
     "uuid": "^9.0.0"
   },
   "lint-staged": {
-    "*.{js,ts}": "sh -c 'eslint --fix || exit 0'",
-    "*.{json,md,txt}": "prettier --write"
+    "*.{json,md,txt,js,ts}": "prettier --write"
   },
   "prettier": {
     "trailingComma": "es5",
