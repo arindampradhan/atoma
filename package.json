@@ -20,7 +20,7 @@
     "uuid": "^9.0.0"
   },
   "lint-staged": {
-    "*.{js,ts}": "eslint --fix",
+    "*.{js,ts}": "sh -c 'eslint --fix || exit 0'",
     "*.{json,md,txt}": "prettier --write"
   },
   "prettier": {
@@ -37,7 +37,7 @@
   "eslintConfig": {
     "env": {
       "commonjs": true,
-      "es6": false,
+      "es6": true,
       "node": true
     },
     "extends": [
@@ -50,7 +50,7 @@
       "SharedArrayBuffer": "readonly"
     },
     "parserOptions": {
-      "ecmaVersion": 2015
+      "ecmaVersion": 2020
     },
     "plugins": [
       "prettier"

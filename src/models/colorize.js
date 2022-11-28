@@ -1,3 +1,6 @@
+/*eslint class-methods-use-this: ["error", { "enforceForClassFields": true }] */
+/*eslint class-methods-use-this: ["error", { "enforceForClassFields": false }] */
+
 const { BROKERS_IDS, PRODUCER_FOLDER_PATH } = require('../utils/constants');
 const {
   getBrokerPathById,
@@ -13,12 +16,13 @@ const {
 const fs = require('fs');
 const isBase64 = require('is-base64');
 const { v4 } = require('uuid');
+const { MessageFile } = require('./file');
 
 class PetalicaColorizer {
   constructor(page, url = 'https://petalica.com/index_en.html') {
     this.page = page;
     this.url = url;
-    this.filepath = '';
+    this.file = null;
   }
 
   setPage(page) {
@@ -50,16 +54,22 @@ class PetalicaColorizer {
           imageUrl,
           getBrokerPathById(BROKERS_IDS.ColorizeQueue)
         );
-        this.filepath = result.path;
-        return result;
+        const f = new MessageFile(result.fileName, result.path);
+        this.file = f;
+        return f;
       } else {
         const result = downloadWithUrl(
           imageUrl,
           getBrokerPathById(BROKERS_IDS.ColorizeQueue),
           { preserveName: false }
         );
-        this.filepath = result.path;
-        return result;
+        const f = new MessageFile(
+          result.fileName,
+          result.path,
+          BROKERS_IDS.ColorizeQueue
+        );
+        this.file = f;
+        return f;
       }
     } catch (error) {
       throw error;
@@ -81,7 +91,7 @@ class HotpotColorizer {
     this.page = page;
     this.url = url;
     this.originalFileName = '';
-    this.filepath = '';
+    this.file = null;
   }
 
   setPage(page) {
@@ -108,11 +118,14 @@ class HotpotColorizer {
   }
 
   isImageReady = async () => {
-    const el = await this.page.$('#resultListBox  .targetBox img');
-    const image = await el.getProperty('src');
-    const imageUrl = await image.jsonValue();
-    console.log(imageUrl);
-    return imageUrl.startsWith('blob');
+    try {
+      const el = await this.page.$('#resultListBox  .targetBox img');
+      const image = await el.getProperty('src');
+      const imageUrl = await image.jsonValue();
+      return imageUrl.startsWith('blob');
+    } catch (error) {
+      throw 'Error fetching image';
+    }
   };
 
   downloadImage = async () => {
@@ -143,7 +156,13 @@ class HotpotColorizer {
         path.join(downloadPath, downloadedFilename),
         path.join(downloadPath, expectedFilename)
       );
-      this.filepath = path.join(downloadPath, expectedFilename);
+      const fl = new MessageFile(
+        expectedFilename,
+        path.join(downloadPath, expectedFilename),
+        BROKERS_IDS.ColorizeQueue
+      );
+      this.file = fl;
+      return fl;
     } catch (e) {
       throw e;
     }

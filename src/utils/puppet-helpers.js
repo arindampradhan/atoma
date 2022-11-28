@@ -1,18 +1,14 @@
-const {
-  isProduction,
-  getExtensionFromHref,
-  getFileNameFromHref,
-  getExtensionFromBase64,
-  getExtensionFromUrl,
-  timeout,
-} = require('./helpers');
 const puppeteer = require('puppeteer');
 const https = require('https');
 const fs = require('fs');
 const { v4 } = require('uuid');
 const path = require('path');
-const axios = require('axios');
-const fetch = require('node-fetch');
+const {
+  isProduction,
+  getExtensionFromHref,
+  getFileNameFromHref,
+  getExtensionFromBase64,
+} = require('./helpers');
 
 const configureBrower = async ({ url }) => {
   const browser = await puppeteer.launch({
@@ -57,7 +53,7 @@ function downloadWithBase64(base64, dest) {
       .replace(/^data:image\/jpeg;base64,/, '')
       .replace(/^data:image\/jpg;base64,/, '');
     base64Data += base64Data.replace('+', ' ');
-    binaryData = new Buffer(base64Data, 'base64').toString('binary');
+    // binaryData = new Buffer(base64Data, 'base64').toString('binary');
 
     const fileDest = path.resolve(path.join(dest, fileName));
     fs.writeFile(fileDest, base64Data, 'base64', (err) => {

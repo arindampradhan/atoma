@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Colorize
 // - https://petalica.com/index_en.html
 // - https://hotpot.ai/colorize-picture
@@ -17,17 +18,13 @@ async function colorizePetalica(fileName) {
 
   // process all 3 filters
   await petalica.uploadImage(fileName); // 2
-  await petalica.downloadImage();
+  const result1 = await petalica.downloadImage();
   await petalica.changeFilter(1);
-  await petalica.downloadImage();
+  const result2 = await petalica.downloadImage();
   await petalica.changeFilter(0);
-  await petalica.downloadImage();
+  const result3 = await petalica.downloadImage();
 
-  // await first.click()
-  return {
-    browser,
-    // file,
-  };
+  return [result1, result2, result3];
 }
 
 async function colorize(fileName) {

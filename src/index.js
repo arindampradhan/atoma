@@ -1,5 +1,5 @@
 const colorize = require('./modules/colorize');
-const { onProducerChange } = require('./utils/watchers');
+// const { onProducerChange } = require('./utils/watchers');
 
 const main = async () => {
   const { browser } = await colorize('Screenshot 2022-11-25 at 3.25.56 AM.png');
