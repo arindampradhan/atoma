@@ -1,24 +1,41 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const { executablePath } = require('puppeteer');
 const https = require('https');
 const fs = require('fs');
 const { v4 } = require('uuid');
 const path = require('path');
+const isBase64 = require('is-base64');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const {
   isProduction,
   getExtensionFromHref,
   getFileNameFromHref,
   getExtensionFromBase64,
+  getBrokerPathById,
 } = require('./helpers');
+const { MessageFile } = require('../models/file');
+
+puppeteer.use(StealthPlugin());
 
 const configureBrower = async ({ url }) => {
   const browser = await puppeteer.launch({
     headless: isProduction(),
     slowMo: 50,
+    executablePath: executablePath(),
   });
 
   const page = await browser.newPage();
   await page.goto(url, { waitUntil: 'networkidle2' });
   return { page, browser };
+};
+
+const uploadFileUsingChooser = async (target, filePath, page) => {
+  const [fileChooser] = await Promise.all([
+    page.waitForFileChooser(),
+    page.click(target),
+  ]);
+
+  await fileChooser.accept([filePath]);
 };
 
 function downloadWithUrl(imgUrl, dest, { preserveName = false }) {
@@ -44,13 +61,17 @@ function downloadWithUrl(imgUrl, dest, { preserveName = false }) {
     });
   });
 }
+
 function downloadWithBase64(base64, dest) {
   return new Promise((resolve, reject) => {
     const fileExt = getExtensionFromBase64(base64);
     const fileName = `${v4()}.${fileExt}`;
     let base64Data = base64
+      .replace(/^data:image\/PNG;base64,/, '')
       .replace(/^data:image\/png;base64,/, '')
+      .replace(/^data:image\/JPEG;base64,/, '')
       .replace(/^data:image\/jpeg;base64,/, '')
+      .replace(/^data:image\/JPG;base64,/, '')
       .replace(/^data:image\/jpg;base64,/, '');
     base64Data += base64Data.replace('+', ' ');
     // binaryData = new Buffer(base64Data, 'base64').toString('binary');
@@ -68,9 +89,37 @@ function downloadWithBase64(base64, dest) {
     });
   });
 }
+/**
+ * Supports base64 and url images
+ */
+const downloadImage = async (imageUrl, brokerId) => {
+  try {
+    if (isBase64(imageUrl, { allowMime: true })) {
+      const result = await downloadWithBase64(
+        imageUrl,
+        getBrokerPathById(brokerId)
+      );
+      const f = new MessageFile(result.fileName, result.path);
+      return f;
+    }
+    const result = await downloadWithUrl(
+      imageUrl,
+      getBrokerPathById(brokerId),
+      {
+        preserveName: false,
+      }
+    );
+    const f = new MessageFile(result.fileName, result.path, brokerId);
+    return f;
+  } catch (e) {
+    throw new Error('Unable to download!');
+  }
+};
 
 module.exports = {
   configureBrower,
   downloadWithUrl,
   downloadWithBase64,
+  uploadFileUsingChooser,
+  downloadImage,
 };

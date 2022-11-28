@@ -13,11 +13,13 @@
   "author": "arindampradhan <arindampradhan10@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@scrapingant/scrapingant-client": "^0.2.1",
     "axios": "^1.2.0",
     "fs-extra": "^10.1.0",
     "is-base64": "^1.1.0",
     "puppeteer": "^19.3.0",
     "puppeteer-extra": "^3.3.4",
+    "puppeteer-extra-plugin-stealth": "^2.11.1",
     "uuid": "^9.0.0"
   },
   "lint-staged": {
@@ -68,6 +70,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",
     "@commitlint/config-conventional": "^17.3.0",
+    "cheerio": "^1.0.0-rc.12",
     "eslint": "^8.28.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-node": "^4.1.0",
