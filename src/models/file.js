@@ -5,6 +5,10 @@ class MessageFile {
     this.queueId = queueId;
   }
 
+  setQueueId(queueId) {
+    this.queueId = queueId;
+  }
+
   getFile() {
     return this.file;
   }

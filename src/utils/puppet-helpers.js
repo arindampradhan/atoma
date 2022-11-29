@@ -12,6 +12,8 @@ const {
   getFileNameFromHref,
   getExtensionFromBase64,
   getBrokerPathById,
+  getExtensionFromFileName,
+  waitUntil,
 } = require('./helpers');
 const { MessageFile } = require('../models/file');
 
@@ -116,10 +118,44 @@ const downloadImage = async (imageUrl, brokerId) => {
   }
 };
 
+const downloadImageWithBehaviour = async (
+  behaviourFn,
+  downloadFilePath,
+  page
+) => {
+  // eslint-disable-next-line node/no-unsupported-features/node-builtins
+  const f = fs.promises;
+  const ext = getExtensionFromFileName(downloadFilePath);
+  const expectedFilename = `${v4()}.${ext}`;
+  const downloadFolderPath = path.dirname(downloadFilePath);
+  const client = await page.target().createCDPSession();
+  await client.send('Page.setDownloadBehavior', {
+    behavior: 'allow',
+    downloadPath: downloadFolderPath,
+  });
+
+  // task
+  await behaviourFn();
+  // task
+
+  const condition = () => fs.existsSync(path.resolve(downloadFilePath));
+  await waitUntil(condition);
+  await f.rename(
+    path.resolve(downloadFilePath),
+    path.join(downloadFolderPath, expectedFilename)
+  );
+  const fl = new MessageFile(
+    expectedFilename,
+    path.join(downloadFolderPath, expectedFilename)
+  );
+  return fl;
+};
+
 module.exports = {
   configureBrower,
   downloadWithUrl,
   downloadWithBase64,
   uploadFileUsingChooser,
   downloadImage,
+  downloadImageWithBehaviour,
 };

@@ -34,11 +34,11 @@ async function colorize(fileName) {
   hotpot.setOriginalFileName(fileName);
 
   await hotpot.uploadImage(fileName); // 2
-  await hotpot.downloadImage(page);
+  const file = await hotpot.downloadImage(page);
 
   return {
     browser,
-    // file,
+    file,
   };
 }
 

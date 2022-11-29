@@ -139,3 +139,4 @@ dist
 image-space/**/*.jpg
 image-space/**/*.jpeg
 image-space/**/*.png
+image-space/**/*.svg
