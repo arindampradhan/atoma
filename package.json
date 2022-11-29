@@ -1,10 +1,11 @@
 {
   "name": "atoma",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Image Automation software",
   "main": "src/index.js",
   "scripts": {
     "prepare": "husky install",
+    "release": "standard-version",
     "test": "echo \"⚠️ Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=development && node src/index.js",
     "start": "node src/index.js",
@@ -79,7 +80,6 @@
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.4",
-    "prettier": "^2.8.0",
-    "standard-version": "^9.5.0"
+    "prettier": "^2.8.0"
   }
 }
