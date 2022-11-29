@@ -1,6 +1,6 @@
 {
   "name": "atoma",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Image Automation software",
   "main": "src/index.js",
   "scripts": {
