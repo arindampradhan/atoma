@@ -59,7 +59,8 @@
       "ecmaVersion": 2020
     },
     "plugins": [
-      "prettier"
+      "prettier",
+      "unused-imports"
     ],
     "rules": {
       "prettier/prettier": "error",
@@ -81,6 +82,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.4",
     "prettier": "^2.8.0"

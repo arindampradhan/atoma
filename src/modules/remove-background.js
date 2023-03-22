@@ -22,10 +22,11 @@ const removeBgTask = async (filePath) => {
   const { browser, page } = await configureBrower({ url: removeBg.url });
   removeBg.setPage(page);
   const file = await removeBg.processImage(filePath);
-  return {
+  const queueItem = {
     browser,
     file,
   };
+  return [queueItem];
 };
 
 module.exports = {

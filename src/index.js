@@ -1,5 +1,5 @@
 const { vectorizeAI } = require('./modules/image-transform');
-const { removeBgTask } = require('./modules/remove-background');
+const { zyroRemoveBg } = require('./modules/remove-background');
 const { onChannelChange } = require('./utils/watchers');
 
 const task1 = async () => {
@@ -9,11 +9,18 @@ const task1 = async () => {
   await browser.close();
 };
 
+const task2 = async () => {
+  const f =
+    '/Users/ap/Documents/Atoma/image-space/Producer/Screenshot 2022-11-25 at 3.25.56 AM.png';
+  const { browser, file } = await removeBgTask(f);
+  await browser.close();
+};
+
 const main = async () => {
   try {
     const f =
       '/Users/ap/Documents/Atoma/image-space/Producer/Screenshot 2022-11-25 at 3.25.56 AM.png';
-    const { browser, file } = await removeBgTask(f);
+    const [{ browser, file }] = await zyroRemoveBg(f);
     await browser.close();
   } catch (error) {
     console.log(error);

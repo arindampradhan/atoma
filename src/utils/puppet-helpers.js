@@ -69,7 +69,7 @@ function downloadWithUrl(imgUrl, file) {
 
 function downloadWithBase64(base64, file) {
   return new Promise((resolve, reject) => {
-    file.setTargetExtension(`.${getExtensionFromBase64(base64)}`);
+    file.setTargetExtension(`.${getExtensionFromBase64(base64).toLowerCase()}`);
     let base64Data = base64
       .replace(/^data:image\/PNG;base64,/, '')
       .replace(/^data:image\/png;base64,/, '')

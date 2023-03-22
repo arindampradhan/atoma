@@ -10,6 +10,7 @@
 // - https://zyro.com/in/tools/image-background-remover
 
 const path = require('path');
+const MessageFile = require('../queue/file');
 const { PRODUCER_FOLDER_PATH, BROKERS_IDS } = require('../utils/constants');
 const { downloadImage } = require('../utils/puppet-helpers');
 
@@ -28,19 +29,24 @@ class Zyro {
     this.page = page;
   }
 
+  setFile(filePath) {
+    this.file = new MessageFile(filePath);
+    console.log(this.file);
+  }
+
   async processImage(filePath) {
     await this.uploadImage(filePath);
     const file = await this.downloadImage(this.page);
     return file;
   }
 
-  async uploadImage(filenameFromProducer) {
+  async uploadImage(filePath) {
     try {
       const { page } = this;
       const handle = await page.$('input[type="file"]');
-      await handle.uploadFile(
-        path.join(PRODUCER_FOLDER_PATH, filenameFromProducer)
-      );
+      this.setFile(filePath);
+      this.file.setTargetBrokerId(BROKERS_IDS.RemoveBackgroundQueue);
+      await handle.uploadFile(filePath);
     } catch (error) {
       throw new Error(`Unable to upload File`);
     }
@@ -53,8 +59,9 @@ class Zyro {
       const image = await el.$('img');
       const src = await image.getProperty('src');
       const imageUrl = await src.jsonValue();
-      await downloadImage(imageUrl, BROKERS_IDS.RemoveBackgroundQueue);
+      await downloadImage(imageUrl, this.file);
     } catch (error) {
+      console.log(error);
       throw new Error(`Unable to Process File to Queue`);
     }
   }
