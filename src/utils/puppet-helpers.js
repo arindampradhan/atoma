@@ -47,16 +47,12 @@ function downloadWithUrl(imgUrl, file) {
       try {
         const fileExt = getExtensionFromHref(imgUrl);
         file.setTargetExtension(fileExt);
-        const fileName = file.destFileName;
         const fileDest = file.destFilePath;
         const stream = fs.createWriteStream(fileDest);
         res.pipe(stream);
         stream.on('finish', () => {
           stream.close();
-          resolve({
-            path: fileDest,
-            fileName,
-          });
+          resolve(file);
         });
         stream.on('error', (e) => {
           reject(e);
