@@ -31,43 +31,45 @@ const configureBrower = async ({ url }) => {
   return { page, browser };
 };
 
-const uploadFileUsingChooser = async (target, filePath, page) => {
+const uploadFileUsingChooser = async (target, file, page) => {
   const [fileChooser] = await Promise.all([
     page.waitForFileChooser(),
     page.click(target),
   ]);
 
-  await fileChooser.accept([filePath]);
+  await fileChooser.accept([file.path]);
 };
 
-function downloadWithUrl(imgUrl, dest, { preserveName = false }) {
+function downloadWithUrl(imgUrl, file) {
   return new Promise((resolve, reject) => {
     https.get(imgUrl, (res) => {
-      const fileExt = getExtensionFromHref(imgUrl);
-      const fileName = preserveName
-        ? getFileNameFromHref()
-        : `${v4()}.${fileExt}`;
-      const fileDest = `${dest}/${fileName}`;
-      const stream = fs.createWriteStream(fileDest);
-      res.pipe(stream);
-      stream.on('finish', () => {
-        stream.close();
-        resolve({
-          path: fileDest,
-          fileName,
+      try {
+        const fileExt = getExtensionFromHref(imgUrl);
+        file.setTargetExtension(fileExt);
+        const fileName = file.destFileName;
+        const fileDest = file.destFilePath;
+        const stream = fs.createWriteStream(fileDest);
+        res.pipe(stream);
+        stream.on('finish', () => {
+          stream.close();
+          resolve({
+            path: fileDest,
+            fileName,
+          });
         });
-      });
-      stream.on('error', (e) => {
-        reject(e);
-      });
+        stream.on('error', (e) => {
+          reject(e);
+        });
+      } catch (error) {
+        console.log(error);
+      }
     });
   });
 }
 
-function downloadWithBase64(base64, dest) {
+function downloadWithBase64(base64, file) {
   return new Promise((resolve, reject) => {
-    const fileExt = getExtensionFromBase64(base64);
-    const fileName = `${v4()}.${fileExt}`;
+    file.setTargetExtension(`.${getExtensionFromBase64(base64)}`);
     let base64Data = base64
       .replace(/^data:image\/PNG;base64,/, '')
       .replace(/^data:image\/png;base64,/, '')
@@ -78,15 +80,11 @@ function downloadWithBase64(base64, dest) {
     base64Data += base64Data.replace('+', ' ');
     // binaryData = new Buffer(base64Data, 'base64').toString('binary');
 
-    const fileDest = path.resolve(path.join(dest, fileName));
-    fs.writeFile(fileDest, base64Data, 'base64', (err) => {
+    fs.writeFile(file.destFilePath, base64Data, 'base64', (err) => {
       if (err) {
         reject(err);
       } else {
-        resolve({
-          path: fileDest,
-          fileName,
-        });
+        resolve(file);
       }
     });
   });
@@ -94,24 +92,14 @@ function downloadWithBase64(base64, dest) {
 /**
  * Supports base64 and url images
  */
-const downloadImage = async (imageUrl, brokerId) => {
+const downloadImage = async (imageUrl, file) => {
   try {
     if (isBase64(imageUrl, { allowMime: true })) {
-      const result = await downloadWithBase64(
-        imageUrl,
-        getBrokerPathById(brokerId)
-      );
-      const f = new MessageFile(result.fileName, result.path);
+      // returns file type
+      const f = await downloadWithBase64(imageUrl, file);
       return f;
     }
-    const result = await downloadWithUrl(
-      imageUrl,
-      getBrokerPathById(brokerId),
-      {
-        preserveName: false,
-      }
-    );
-    const f = new MessageFile(result.fileName, result.path, brokerId);
+    const f = await downloadWithUrl(imageUrl, file);
     return f;
   } catch (e) {
     throw new Error('Unable to download!');

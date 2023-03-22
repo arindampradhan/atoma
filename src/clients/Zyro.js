@@ -28,6 +28,12 @@ class Zyro {
     this.page = page;
   }
 
+  async processImage(filePath) {
+    await this.uploadImage(filePath);
+    const file = await this.downloadImage(this.page);
+    return file;
+  }
+
   async uploadImage(filenameFromProducer) {
     try {
       const { page } = this;

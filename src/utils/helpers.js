@@ -28,7 +28,7 @@ const getFileNameFromHref = (url) => {
 
 const getExtensionFromHref = (url) => {
   const filename = getFileNameFromHref(url);
-  return filename.split('.').pop();
+  return `.${filename.split('.').pop()}`;
 };
 
 const getExtensionFromFileName = (fileName) =>

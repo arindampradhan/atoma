@@ -11,6 +11,7 @@
 // - https://zyro.com/in/tools/image-background-remover
 
 const path = require('path');
+const MessageFile = require('../queue/file');
 const { PRODUCER_FOLDER_PATH, BROKERS_IDS } = require('../utils/constants');
 const {
   uploadFileUsingChooser,
@@ -32,14 +33,22 @@ class RemoveBg {
     this.page = page;
   }
 
-  async uploadImage(filenameFromProducer) {
+  setFile(filePath) {
+    this.file = new MessageFile(filePath);
+    console.log(this.file);
+  }
+
+  async processImage(filePath) {
+    await this.uploadImage(filePath);
+    const file = await this.downloadImage();
+    return file;
+  }
+
+  async uploadImage(filePath) {
     try {
       const { page } = this;
-      await uploadFileUsingChooser(
-        '.btn.btn-primary.btn-lg',
-        path.join(PRODUCER_FOLDER_PATH, filenameFromProducer),
-        page
-      );
+      this.setFile(filePath);
+      await uploadFileUsingChooser('.btn.btn-primary.btn-lg', this.file, page);
     } catch (error) {
       console.log(error);
       throw new Error(`Unable to upload File`);
@@ -52,14 +61,13 @@ class RemoveBg {
       const el = await page.waitForSelector(
         '.img-wrapper img.img-fluid.transparency-grid'
       );
+      this.file.setTargetBrokerId(BROKERS_IDS.RemoveBackgroundQueue);
       const src = await el.getProperty('src');
       const imageUrl = await src.jsonValue();
-      const file = await downloadImage(
-        imageUrl,
-        BROKERS_IDS.RemoveBackgroundQueue
-      );
-      return file;
+      const f = await downloadImage(imageUrl, this.file);
+      return f;
     } catch (error) {
+      console.log(error);
       throw new Error(`Unable to Process File to Queue`);
     }
   }

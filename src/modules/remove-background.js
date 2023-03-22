@@ -5,25 +5,23 @@ const { configureBrower } = require('../utils/puppet-helpers');
 const Zyro = require('../clients/Zyro');
 const RemoveBg = require('../clients/RemoveBg');
 
-const zyroRemoveBg = async (fileName) => {
+const zyroRemoveBg = async (filePath) => {
   const zyro = new Zyro();
   const { browser, page } = await configureBrower({ url: zyro.url });
   zyro.setPage(page);
-
-  await zyro.uploadImage(fileName);
-  const file = await zyro.downloadImage(page);
-  return {
+  const file = await zyro.processImage(filePath);
+  const queueItem = {
     browser,
     file,
   };
+  return [queueItem];
 };
 
-const removeBgTask = async (fileName) => {
+const removeBgTask = async (filePath) => {
   const removeBg = new RemoveBg();
   const { browser, page } = await configureBrower({ url: removeBg.url });
   removeBg.setPage(page);
-  await removeBg.uploadImage(fileName);
-  const file = await removeBg.downloadImage(page);
+  const file = await removeBg.processImage(filePath);
   return {
     browser,
     file,
