@@ -1,14 +1,12 @@
-// ______                                ______            _                                   _
-// | ___ \                               | ___ \          | |                                 | |
-// | |_/ /___ _ __ ___   _____   _____   | |_/ / __ _  ___| | ____ _ _ __ ___  _   _ _ __   __| |
-// |    // _ \ '_ ` _ \ / _ \ \ / / _ \  | ___ \/ _` |/ __| |/ / _` | '__/ _ \| | | | '_ \ / _` |
-// | |\ \  __/ | | | | | (_) \ V /  __/  | |_/ / (_| | (__|   < (_| | | | (_) | |_| | | | | (_| |
-// \_| \_\___|_| |_| |_|\___/ \_/ \___|  \____/ \__,_|\___|_|\_\__, |_|  \___/ \__,_|_| |_|\__,_|
-//                                                              __/ |
-//                                                             |___/
 //
-// - https://www.remove.bg/upload
-// - https://zyro.com/in/tools/image-background-remover
+//
+// | |  | |     | |                               | |     | ___ \
+// | |  | | __ _| |_ ___ _ __ _ __ ___   __ _ _ __| | __  | |_/ /___ _ __ ___   _____   _____ _ __
+// | |/\| |/ _` | __/ _ \ '__| '_ ` _ \ / _` | '__| |/ /  |    // _ \ '_ ` _ \ / _ \ \ / / _ \ '__|
+// \  /\  / (_| | ||  __/ |  | | | | | | (_| | |  |   <   | |\ \  __/ | | | | | (_) \ V /  __/ |
+//  \/  \/ \__,_|\__\___|_|  |_| |_| |_|\__,_|_|  |_|\_\  \_| \_\___|_| |_| |_|\___/ \_/ \___|_|
+//
+//
 
 const path = require('path');
 const { PRODUCER_FOLDER_PATH, BROKERS_IDS } = require('../utils/constants');
@@ -17,7 +15,7 @@ const {
   downloadImage,
 } = require('../utils/puppet-helpers');
 
-class RemoveBg {
+class WatermarkRemover {
   constructor(
     page,
     url = 'https://www.remove.bg/upload',
@@ -65,4 +63,4 @@ class RemoveBg {
   }
 }
 
-module.exports = RemoveBg;
+module.exports = WatermarkRemover;

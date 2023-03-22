@@ -15,6 +15,8 @@ const getKeyByValue = (object, value) =>
 const getBrokerPathById = (id) =>
   path.join(BROKER_FOLDER_PATH, getKeyByValue(BROKERS_IDS, id));
 
+const getBrokerIdbyFolderName = (id) => BROKER_FOLDER_PATH[id];
+
 // eslint-disable-next-line no-promise-executor-return
 const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -59,6 +61,7 @@ module.exports = {
   getExtensionFromHref,
   getExtensionFromBase64,
   getExtensionFromFileName,
+  getBrokerIdbyFolderName,
   getKeyByValue,
   waitUntil,
   timeout,

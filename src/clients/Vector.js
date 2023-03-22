@@ -1,3 +1,11 @@
+//  _____                           _      _
+// /  __ \                         | |    | |
+// | /  \/ ___  _ ____   _____ _ __| |_   | |_ ___     _____   ____ _
+// | |    / _ \| '_ \ \ / / _ \ '__| __|  | __/ _ \   / __\ \ / / _` |
+// | \__/\ (_) | | | \ V /  __/ |  | |_   | || (_) |  \__ \\ V / (_| |
+//  \____/\___/|_| |_|\_/ \___|_|   \__|   \__\___/   |___/ \_/ \__, |
+//                                                               __/ |
+//                                                              |___/
 const path = require('path');
 const { PRODUCER_FOLDER_PATH, BROKERS_IDS } = require('../utils/constants');
 const { getBrokerPathById } = require('../utils/helpers');

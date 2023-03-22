@@ -6,7 +6,7 @@ const PROJECT_ROOT = path.join(__dirname, '..', '..');
 // Image Queues
 const BROKER_FOLDER_PATH = path.join(PROJECT_ROOT, 'image-space', 'Brokers');
 const PRODUCER_FOLDER_PATH = path.join(PROJECT_ROOT, 'image-space', 'Producer');
-const CONSUMER_FOLDER_PATH = path.join(PROJECT_ROOT, 'image-space', 'Consumer');
+const CONSUMER_FOLDER_PATH = path.join(PROJECT_ROOT, 'image-space', 'Results');
 const IGNORED_FILES = ['.gitkeep'];
 
 const BROKERS_IDS = {
@@ -16,6 +16,7 @@ const BROKERS_IDS = {
   RemoveBackgroundQueue: 1,
   RemoveWatermarkQueue: 3,
   RemoveObjectsQueue: 6,
+  ProducerQueue: 0,
 };
 
 module.exports = {

@@ -2,8 +2,8 @@
 // - https://www.remove.bg/upload
 // - https://zyro.com/in/tools/image-background-remover
 const { configureBrower } = require('../utils/puppet-helpers');
-const Zyro = require('../models/Zyro');
-const RemoveBg = require('../models/RemoveBg');
+const Zyro = require('../clients/Zyro');
+const RemoveBg = require('../clients/RemoveBg');
 
 const zyroRemoveBg = async (fileName) => {
   const zyro = new Zyro();

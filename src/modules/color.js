@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
-// Colorize
+// Add Colors
 // - https://petalica.com/index_en.html
 // - https://hotpot.ai/colorize-picture
 
 const path = require('path');
 const { configureBrower } = require('../utils/puppet-helpers');
-const { PetalicaColorizer, HotpotColorizer } = require('../models/colorize');
+const { PetalicaColorizer, HotpotColorizer } = require('../clients/Addcolors');
 
 async function colorizePetalica(fileName) {
   const petalica = new PetalicaColorizer();

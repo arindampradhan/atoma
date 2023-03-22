@@ -1,3 +1,12 @@
+//
+//   ___      _     _    _____       _
+//  / _ \    | |   | |  /  __ \     | |
+// / /_\ \ __| | __| |  | /  \/ ___ | | ___  _ __ ___
+// |  _  |/ _` |/ _` |  | |    / _ \| |/ _ \| '__/ __|
+// | | | | (_| | (_| |  | \__/\ (_) | | (_) | |  \__ \
+// \_| |_/\__,_|\__,_|   \____/\___/|_|\___/|_|  |___/
+//
+//
 /*eslint class-methods-use-this: ["error", { "enforceForClassFields": true }] */
 /*eslint class-methods-use-this: ["error", { "enforceForClassFields": false }] */
 
@@ -16,7 +25,7 @@ const {
 const fs = require('fs');
 const isBase64 = require('is-base64');
 const { v4 } = require('uuid');
-const { MessageFile } = require('./file');
+const MessageFile = require('../queue/file');
 
 class PetalicaColorizer {
   constructor(page, url = 'https://petalica.com/index_en.html') {
