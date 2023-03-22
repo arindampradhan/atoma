@@ -43,13 +43,14 @@ class Vectorizer {
   async uploadImage(filePath) {
     try {
       const { page } = this;
+      this.setFile(filePath);
       await uploadFileUsingChooser(
         '.FileInput-click_to_upload',
-        filePath,
+        this.file,
         page
       );
-      this.setFile(filePath);
     } catch (error) {
+      console.log(error);
       throw new Error(`Unable to upload File`);
     }
   }
@@ -68,7 +69,7 @@ class Vectorizer {
         this.file,
         page
       );
-      await this.page.close();
+
       return this.file;
     } catch (error) {
       console.log(error);

@@ -17,6 +17,7 @@ const BROKERS_IDS = {
   RemoveWatermarkQueue: 3,
   RemoveObjectsQueue: 6,
   Producer: 0,
+  Consumer: 9999,
 };
 
 module.exports = {

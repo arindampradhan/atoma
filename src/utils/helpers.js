@@ -1,7 +1,23 @@
+/* eslint-disable node/no-unsupported-features/node-builtins */
 /* eslint-disable no-return-await */
+const fs = require('fs');
 const path = require('path');
 const URL = require('url');
-const { BROKERS_IDS, BROKER_FOLDER_PATH } = require('./constants');
+const {
+  BROKERS_IDS,
+  BROKER_FOLDER_PATH,
+  PRODUCER_FOLDER_PATH,
+  CONSUMER_FOLDER_PATH,
+} = require('./constants');
+
+const copyFile = (src, dest) => {
+  Promise((resolve, reject) => {
+    fs.copyFile(src, dest, (err) => {
+      if (err) reject(err);
+      resolve('source.txt was copied to destination.txt');
+    });
+  });
+};
 
 const isDevelopment = () =>
   process.env.NODE_ENV.toLocaleLowerCase() !== 'production';
@@ -12,8 +28,15 @@ const isProduction = () =>
 const getKeyByValue = (object, value) =>
   Object.keys(object).find((key) => object[key] === value);
 
-const getBrokerPathById = (id) =>
-  path.join(BROKER_FOLDER_PATH, getKeyByValue(BROKERS_IDS, id));
+const getBrokerPathById = (id) => {
+  if (id === BROKERS_IDS.Producer) {
+    return PRODUCER_FOLDER_PATH;
+  }
+  if (id === BROKERS_IDS.Consumer) {
+    return CONSUMER_FOLDER_PATH;
+  }
+  return path.join(BROKER_FOLDER_PATH, getKeyByValue(BROKERS_IDS, id));
+};
 
 const getBrokerIdbyFolderName = (id) => BROKERS_IDS[id];
 
@@ -65,4 +88,5 @@ module.exports = {
   getKeyByValue,
   waitUntil,
   timeout,
+  copyFile,
 };

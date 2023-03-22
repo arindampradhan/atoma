@@ -56,7 +56,7 @@ class WatermarkRemover {
         imageUrl,
         BROKERS_IDS.RemoveBackgroundQueue
       );
-      await this.page.close();
+
       return file;
     } catch (error) {
       throw new Error(`Unable to Process File to Queue`);

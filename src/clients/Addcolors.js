@@ -155,7 +155,6 @@ class HotpotColorizer {
         path.join(this.file.destFolderPath, downloadedFilename),
         this.file.destFilePath
       );
-      await this.page.close();
 
       return this.file;
     } catch (e) {

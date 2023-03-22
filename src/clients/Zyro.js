@@ -59,7 +59,7 @@ class Zyro {
       const image = await el.$('img');
       const src = await image.getProperty('src');
       const imageUrl = await src.jsonValue();
-      await this.page.close();
+
       return await downloadImage(imageUrl, this.file);
     } catch (error) {
       console.log(error);
