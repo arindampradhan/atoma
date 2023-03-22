@@ -12,11 +12,11 @@ const IGNORED_FILES = ['.gitkeep'];
 const BROKERS_IDS = {
   AutogenerateImagesQueue: 5,
   ColorizeQueue: 2,
-  ImagetransformQueue: 4,
+  ImageVectorQueue: 4,
   RemoveBackgroundQueue: 1,
   RemoveWatermarkQueue: 3,
   RemoveObjectsQueue: 6,
-  ProducerQueue: 0,
+  Producer: 0,
 };
 
 module.exports = {

@@ -15,7 +15,7 @@ const {
   getExtensionFromFileName,
   waitUntil,
 } = require('./helpers');
-const { MessageFile } = require('../models/file');
+const { MessageFile } = require('../queue/file');
 
 puppeteer.use(StealthPlugin());
 
@@ -118,35 +118,27 @@ const downloadImage = async (imageUrl, brokerId) => {
   }
 };
 
-const downloadImageWithBehaviour = async (
-  behaviourFn,
-  downloadFilePath,
-  page
-) => {
+const downloadImageWithBehaviour = async (behaviourFn, file, page) => {
   // eslint-disable-next-line node/no-unsupported-features/node-builtins
-  const f = fs.promises;
-  const ext = getExtensionFromFileName(downloadFilePath);
-  const expectedFilename = `${v4()}.${ext}`;
-  const downloadFolderPath = path.dirname(downloadFilePath);
+  const fp = fs.promises;
   const client = await page.target().createCDPSession();
   await client.send('Page.setDownloadBehavior', {
     behavior: 'allow',
-    downloadPath: downloadFolderPath,
+    downloadPath: file.destFolderPath,
   });
 
   // task
   await behaviourFn();
   // task
-
-  const condition = () => fs.existsSync(path.resolve(downloadFilePath));
+  const condition = () => fs.existsSync(path.resolve(file.temporaryFilePath));
   await waitUntil(condition);
-  await f.rename(
-    path.resolve(downloadFilePath),
-    path.join(downloadFolderPath, expectedFilename)
+  await fp.rename(
+    path.resolve(file.temporaryFilePath),
+    path.join(file.destFolderPath, file.destFileName)
   );
   const fl = new MessageFile(
-    expectedFilename,
-    path.join(downloadFolderPath, expectedFilename)
+    file.destFileName,
+    path.join(file.destFolderPath, file.destFileName)
   );
   return fl;
 };

@@ -1,5 +1,6 @@
 const { v4 } = require('uuid');
 const path = require('path');
+const fs = require('fs');
 const {
   getBrokerPathById,
   getBrokerIdbyFolderName,
@@ -20,6 +21,7 @@ class MessageFile {
   }
 
   setTargetExtension(targetExt) {
+    this.validateExtension(targetExt);
     this.targetExt = targetExt;
   }
 
@@ -29,7 +31,11 @@ class MessageFile {
   }
 
   get destFilePath() {
-    return path.join(this.destFolderPath, `${this.id}.${this.targetExt}`);
+    return path.join(this.destFolderPath, this.destFileName);
+  }
+
+  get targetQueueName() {
+    return path.basename(path.dirname(this.destFilePath));
   }
 
   get queueName() {
@@ -44,18 +50,35 @@ class MessageFile {
     return path.extname(this.path);
   }
 
+  get temporaryFilePath() {
+    return path.join(
+      this.destFolderPath,
+      `${this.fileNameOnly}${this.targetExt}`
+    );
+  }
+
   get destFileName() {
-    return `${this.id}.${this.ext}`;
+    return `${this.id}${this.targetExt}`;
   }
 
   get fileName() {
     return path.basename(this.path);
   }
 
+  get fileNameOnly() {
+    return path.parse(this.fileName).name;
+  }
+
   // methods
   validatePath(_path) {
     if (!_path || !fs.existsSync(_path)) {
       throw new Error('Path is required!');
+    }
+  }
+
+  validateExtension(ext) {
+    if (!['.svg', '.png', '.jpg', '.jpeg'].includes(ext)) {
+      throw new Error('Invalid extension!');
     }
   }
 }
