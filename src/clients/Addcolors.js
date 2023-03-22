@@ -10,22 +10,11 @@
 /*eslint class-methods-use-this: ["error", { "enforceForClassFields": true }] */
 /*eslint class-methods-use-this: ["error", { "enforceForClassFields": false }] */
 
-const { BROKERS_IDS, PRODUCER_FOLDER_PATH } = require('../utils/constants');
-const {
-  getBrokerPathById,
-  timeout,
-  getExtensionFromFileName,
-  waitUntil,
-} = require('../utils/helpers');
+const { BROKERS_IDS } = require('../utils/constants');
+const { timeout, waitUntil } = require('../utils/helpers');
 const path = require('path');
-const {
-  downloadWithBase64,
-  downloadWithUrl,
-  downloadImage,
-} = require('../utils/puppet-helpers');
+const { downloadImage } = require('../utils/puppet-helpers');
 const fs = require('fs');
-const isBase64 = require('is-base64');
-const { v4 } = require('uuid');
 const MessageFile = require('../queue/file');
 
 class PetalicaColorizer {

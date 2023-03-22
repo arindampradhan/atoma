@@ -43,7 +43,6 @@
   "eslintConfig": {
     "env": {
       "commonjs": true,
-      "es6": true,
       "node": true
     },
     "extends": [
@@ -63,8 +62,9 @@
       "unused-imports"
     ],
     "rules": {
+      "no-unused-vars": 1,
+      "unused-imports/no-unused-imports": "error",
       "prettier/prettier": "error",
-      "no-unused-vars": "warn",
       "no-console": "off",
       "func-names": "off",
       "no-plusplus": "off",

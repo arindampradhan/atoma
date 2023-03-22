@@ -10,9 +10,8 @@
 // - https://www.remove.bg/upload
 // - https://zyro.com/in/tools/image-background-remover
 
-const path = require('path');
 const MessageFile = require('../queue/file');
-const { PRODUCER_FOLDER_PATH, BROKERS_IDS } = require('../utils/constants');
+const { BROKERS_IDS } = require('../utils/constants');
 const {
   uploadFileUsingChooser,
   downloadImage,

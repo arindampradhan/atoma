@@ -1,4 +1,5 @@
 const queue = require('queue');
+
 const q = queue({ results: [] });
 
 // add jobs using the familiar Array API
