@@ -7,7 +7,7 @@ const path = require('path');
 const { configureBrower } = require('../utils/puppet-helpers');
 const { PetalicaColorizer, HotpotColorizer } = require('../clients/Addcolors');
 
-async function colorizePetalica(fileName) {
+async function colorPetalica(filePath) {
   const petalica = new PetalicaColorizer();
   const { browser, page } = await configureBrower({ url: petalica.url });
   petalica.setPage(page);
@@ -17,23 +17,56 @@ async function colorizePetalica(fileName) {
   await page.click('button.close');
 
   // process all 3 filters
-  await petalica.uploadImage(fileName); // 2
+  await petalica.uploadImage(filePath); // 2
   const result1 = await petalica.downloadImage();
+
+  petalica.resetFile(filePath);
   await petalica.changeFilter(1);
   const result2 = await petalica.downloadImage();
+
+  petalica.resetFile(filePath);
   await petalica.changeFilter(0);
   const result3 = await petalica.downloadImage();
 
-  return [result1, result2, result3];
+  const qItem1 = {
+    browser,
+    file: result1,
+  };
+
+  const qItem2 = {
+    browser,
+    file: result2,
+  };
+
+  const qItem3 = {
+    browser,
+    file: result3,
+  };
+
+  return [qItem1, qItem2, qItem3];
 }
 
-async function colorize(fileName) {
+async function petalicaAddColors(filePath) {
   const hotpot = new HotpotColorizer();
   const { browser, page } = await configureBrower({ url: hotpot.url });
   hotpot.setPage(page);
   hotpot.setOriginalFileName(fileName);
 
-  await hotpot.uploadImage(fileName); // 2
+  await hotpot.uploadImage(filePath); // 2
+  const file = await hotpot.downloadImage(page);
+
+  return {
+    browser,
+    file,
+  };
+}
+async function hotpotAddColors(filePath) {
+  const hotpot = new HotpotColorizer();
+  const { browser, page } = await configureBrower({ url: hotpot.url });
+  hotpot.setPage(page);
+  hotpot.setOriginalFileName(fileName);
+
+  await hotpot.uploadImage(filePath); // 2
   const file = await hotpot.downloadImage(page);
 
   return {
@@ -42,4 +75,7 @@ async function colorize(fileName) {
   };
 }
 
-module.exports = colorize;
+module.exports = {
+  colorPetalica,
+  hotpotAddColors,
+};

@@ -21,6 +21,7 @@ const path = require('path');
 const {
   downloadWithBase64,
   downloadWithUrl,
+  downloadImage,
 } = require('../utils/puppet-helpers');
 const fs = require('fs');
 const isBase64 = require('is-base64');
@@ -38,13 +39,25 @@ class PetalicaColorizer {
     this.page = page;
   }
 
-  async uploadImage(filenameFromProducer) {
+  setFile(filePath) {
+    this.file = new MessageFile(filePath);
+    console.log(this.file);
+  }
+
+  resetFile(filePath) {
+    this.file = null;
+    this.file = new MessageFile(filePath);
+    this.file.setTargetBrokerId(BROKERS_IDS.ColorizeQueue);
+    console.log(this.file);
+  }
+
+  async uploadImage(filePath) {
     try {
       const { page } = this;
+      this.setFile(filePath);
+      this.file.setTargetBrokerId(BROKERS_IDS.ColorizeQueue);
       const handle = await page.$('input[type="file"]');
-      await handle.uploadFile(
-        path.join(PRODUCER_FOLDER_PATH, filenameFromProducer)
-      );
+      await handle.uploadFile(filePath);
     } catch (error) {
       throw error;
     }
@@ -58,28 +71,8 @@ class PetalicaColorizer {
       const [el] = await page.$x('//*[@id="paintedImage"]');
       const src = await el.getProperty('src');
       const imageUrl = await src.jsonValue();
-      if (isBase64(imageUrl, { allowMime: true })) {
-        const result = await downloadWithBase64(
-          imageUrl,
-          getBrokerPathById(BROKERS_IDS.ColorizeQueue)
-        );
-        const f = new MessageFile(result.fileName, result.path);
-        this.file = f;
-        return f;
-      } else {
-        const result = downloadWithUrl(
-          imageUrl,
-          getBrokerPathById(BROKERS_IDS.ColorizeQueue),
-          { preserveName: false }
-        );
-        const f = new MessageFile(
-          result.fileName,
-          result.path,
-          BROKERS_IDS.ColorizeQueue
-        );
-        this.file = f;
-        return f;
-      }
+      const f = await downloadImage(imageUrl, this.file);
+      return f;
     } catch (error) {
       throw error;
     }
@@ -107,13 +100,19 @@ class HotpotColorizer {
     this.page = page;
   }
 
+  // remove this
   setOriginalFileName(originalFileName) {
     this.originalFileName = originalFileName;
   }
 
-  async uploadImage(filenameFromProducer) {
+  setFile(filePath) {
+    this.file = new MessageFile(filePath);
+    console.log(this.file);
+  }
+  async uploadImage(filePath) {
     try {
       const { page } = this;
+      this.setFile(filePath);
       const [el] = await page.$x('//*[@id="controlBox"]/div[2]/div/label[5]');
       await el.click();
       const handle = await page.$('input[type="file"]');

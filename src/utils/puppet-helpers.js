@@ -92,14 +92,14 @@ function downloadWithBase64(base64, file) {
 /**
  * Supports base64 and url images
  */
-const downloadImage = async (imageUrl, file) => {
+const downloadImage = async (imageUrlOrbase64, file) => {
   try {
-    if (isBase64(imageUrl, { allowMime: true })) {
+    if (isBase64(imageUrlOrbase64, { allowMime: true })) {
       // returns file type
-      const f = await downloadWithBase64(imageUrl, file);
+      const f = await downloadWithBase64(imageUrlOrbase64, file);
       return f;
     }
-    const f = await downloadWithUrl(imageUrl, file);
+    const f = await downloadWithUrl(imageUrlOrbase64, file);
     return f;
   } catch (e) {
     throw new Error('Unable to download!');
