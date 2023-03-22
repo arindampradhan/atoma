@@ -15,7 +15,7 @@ const getKeyByValue = (object, value) =>
 const getBrokerPathById = (id) =>
   path.join(BROKER_FOLDER_PATH, getKeyByValue(BROKERS_IDS, id));
 
-const getBrokerIdbyFolderName = (id) => BROKER_FOLDER_PATH[id];
+const getBrokerIdbyFolderName = (id) => BROKERS_IDS[id];
 
 // eslint-disable-next-line no-promise-executor-return
 const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

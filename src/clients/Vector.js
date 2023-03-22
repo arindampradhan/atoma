@@ -68,7 +68,8 @@ class Vectorizer {
         this.file,
         page
       );
-      return f;
+      await this.page.close();
+      return this.file;
     } catch (error) {
       console.log(error);
       throw new Error(`Unable to Process File to Queue`);

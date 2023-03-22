@@ -2,29 +2,30 @@ const puppeteer = require('puppeteer-extra');
 const { executablePath } = require('puppeteer');
 const https = require('https');
 const fs = require('fs');
-const { v4 } = require('uuid');
 const path = require('path');
 const isBase64 = require('is-base64');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const {
   isProduction,
   getExtensionFromHref,
-  getFileNameFromHref,
   getExtensionFromBase64,
-  getBrokerPathById,
-  getExtensionFromFileName,
   waitUntil,
 } = require('./helpers');
 const { MessageFile } = require('../queue/file');
 
 puppeteer.use(StealthPlugin());
 
-const configureBrower = async ({ url }) => {
-  const browser = await puppeteer.launch({
-    headless: isProduction(),
-    slowMo: 50,
-    executablePath: executablePath(),
-  });
+const configureBrower = async ({ url }, b = null) => {
+  let browser;
+  if (b) {
+    browser = b;
+  } else {
+    browser = await puppeteer.launch({
+      headless: isProduction(),
+      slowMo: 50,
+      executablePath: executablePath(),
+    });
+  }
 
   const page = await browser.newPage();
   await page.goto(url, { waitUntil: 'networkidle2' });

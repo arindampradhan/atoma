@@ -64,6 +64,7 @@ class RemoveBg {
       const src = await el.getProperty('src');
       const imageUrl = await src.jsonValue();
       const f = await downloadImage(imageUrl, this.file);
+      await this.page.close();
       return f;
     } catch (error) {
       console.log(error);

@@ -95,7 +95,8 @@ class HotpotColorizer {
 
   setFile(filePath) {
     this.file = new MessageFile(filePath);
-    console.log(this.file);
+    this.file.setTargetBrokerId(BROKERS_IDS.ColorizeQueue);
+    this.file.setTargetExtension(this.file.ext);
   }
 
   async processImage(filePath) {
@@ -107,7 +108,6 @@ class HotpotColorizer {
     try {
       const { page } = this;
       this.setFile(filePath);
-      this.file.setTargetBrokerId(BROKERS_IDS.ColorizeQueue);
       const [el] = await page.$x('//*[@id="controlBox"]/div[2]/div/label[5]');
       await el.click();
       const handle = await page.$('input[type="file"]');
@@ -153,8 +153,10 @@ class HotpotColorizer {
       // FIXME: deetFilePath is missing extension
       await f.rename(
         path.join(this.file.destFolderPath, downloadedFilename),
-        `${this.file.destFilePath}${this.file.ext}`
+        this.file.destFilePath
       );
+      await this.page.close();
+
       return this.file;
     } catch (e) {
       throw e;
