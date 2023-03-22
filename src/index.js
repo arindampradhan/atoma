@@ -1,11 +1,13 @@
-const { vectorizeAI } = require('./modules/image-transform');
-// const { onProducerChange } = require('./utils/watchers');
+const { onChannelChange } = require('./utils/watchers');
 
-const main = async () => {
-  const { browser } = await vectorizeAI(
-    'Screenshot 2022-11-25 at 3.25.56 AM.png'
-  );
-  await browser.close();
+const main = () => {
+  onChannelChange((data, err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(data);
+    }
+  });
 };
 
 main();

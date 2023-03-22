@@ -2,7 +2,6 @@
 // - https://vectorizer.ai/
 // - https://zyro.com/in/tools/image-upscaler
 
-const path = require('path');
 const Vectorizer = require('../models/Vectorizer');
 
 const { configureBrower } = require('../utils/puppet-helpers');

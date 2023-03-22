@@ -1,19 +1,50 @@
-const fs = require('fs');
-const { PRODUCER_FOLDER_PATH } = require('./constants');
+const chokidar = require('chokidar');
+const { PRODUCER_FOLDER_PATH, IGNORED_FILES } = require('./constants');
 
-fs.watch(PRODUCER_FOLDER_PATH, { recursive: true }, (eventType, filename) => {
-  if (eventType === 'change') console.log(filename, 'changed.');
-});
+const watchOptions = {
+  ignored: IGNORED_FILES,
+  persistent: true,
+  ignoreInitial: false,
+  awaitWriteFinish: false,
+  ignorePermissionErrors: false,
+};
 
-const onProducerChange = (cb) => {
-  fs.watch(PRODUCER_FOLDER_PATH, { recursive: true }, (eventType, filename) => {
-    if (eventType === 'change') {
-      console.log(filename, 'changed.');
-      cb(eventType, filename);
-    }
-  });
+const watcher = chokidar.watch(PRODUCER_FOLDER_PATH, watchOptions);
+
+const eventTypes = {
+  ADD: 'add',
+  CHANGE: 'change',
+  UNLINK: 'unlink',
+  ERROR: 'error',
+};
+
+const onChannelChange = (cb) => {
+  watcher
+    .on(eventTypes.ADD, (path) => {
+      cb({
+        type: eventTypes.ADD,
+        path,
+        message: `File, ${path}, has been added`,
+      });
+    })
+    .on(eventTypes.CHANGE, (path) => {
+      cb({
+        type: eventTypes.CHANGE,
+        path,
+        message: `File, ${path}, has been added`,
+      });
+    })
+    .on(eventTypes.UNLINK, (path) => {
+      cb({
+        type: eventTypes.UNLINK,
+        path,
+        message: `File, ${path}, has been added`,
+      });
+      console.log('File', path, 'has been removed');
+    })
+    .on(eventTypes.ERROR, (error) => cb(null, error));
 };
 
 module.exports = {
-  onProducerChange,
+  onChannelChange,
 };
