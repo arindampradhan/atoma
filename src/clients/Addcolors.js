@@ -41,6 +41,7 @@ class PetalicaColorizer {
 
   setFile(filePath) {
     this.file = new MessageFile(filePath);
+    this.file.setTargetBrokerId(BROKERS_IDS.ColorizeQueue);
     console.log(this.file);
   }
 
@@ -48,14 +49,12 @@ class PetalicaColorizer {
     this.file = null;
     this.file = new MessageFile(filePath);
     this.file.setTargetBrokerId(BROKERS_IDS.ColorizeQueue);
-    console.log(this.file);
   }
 
   async uploadImage(filePath) {
     try {
       const { page } = this;
       this.setFile(filePath);
-      this.file.setTargetBrokerId(BROKERS_IDS.ColorizeQueue);
       const handle = await page.$('input[type="file"]');
       await handle.uploadFile(filePath);
     } catch (error) {
@@ -109,16 +108,21 @@ class HotpotColorizer {
     this.file = new MessageFile(filePath);
     console.log(this.file);
   }
+
+  async processImage(filePath) {
+    await this.uploadImage(filePath); // 2
+    return await this.downloadImage(this.page);
+  }
+
   async uploadImage(filePath) {
     try {
       const { page } = this;
       this.setFile(filePath);
+      this.file.setTargetBrokerId(BROKERS_IDS.ColorizeQueue);
       const [el] = await page.$x('//*[@id="controlBox"]/div[2]/div/label[5]');
       await el.click();
       const handle = await page.$('input[type="file"]');
-      await handle.uploadFile(
-        path.join(PRODUCER_FOLDER_PATH, filenameFromProducer)
-      );
+      await handle.uploadFile(filePath);
       await page.$eval('#submitButton', (el) => el.click());
     } catch (error) {
       throw error;
@@ -140,15 +144,12 @@ class HotpotColorizer {
     try {
       const { page } = this;
       const f = fs.promises;
-      const fileExt = getExtensionFromFileName(this.originalFileName);
-      const expectedFilename = `${v4()}.${fileExt}`;
-      const downloadedFilename = `Hotpot.${fileExt}`;
-      const downloadPath = getBrokerPathById(BROKERS_IDS.ColorizeQueue);
+      const downloadedFilename = `Hotpot${this.file.ext}`;
 
       const client = await page.target().createCDPSession();
       await client.send('Page.setDownloadBehavior', {
         behavior: 'allow',
-        downloadPath,
+        downloadPath: this.file.destFolderPath,
       });
 
       await page.waitForSelector('.statusBox', { visible: true });
@@ -158,19 +159,14 @@ class HotpotColorizer {
       const el = await page.$('#resultListBox  .targetBox img');
       await el.click();
       const condition = () =>
-        fs.existsSync(path.join(downloadPath, downloadedFilename));
+        fs.existsSync(path.join(this.file.destFolderPath, downloadedFilename));
       await waitUntil(condition);
+      // FIXME: deetFilePath is missing extension
       await f.rename(
-        path.join(downloadPath, downloadedFilename),
-        path.join(downloadPath, expectedFilename)
+        path.join(this.file.destFolderPath, downloadedFilename),
+        `${this.file.destFilePath}${this.file.ext}`
       );
-      const fl = new MessageFile(
-        expectedFilename,
-        path.join(downloadPath, expectedFilename),
-        BROKERS_IDS.ColorizeQueue
-      );
-      this.file = fl;
-      return fl;
+      return this.file;
     } catch (e) {
       throw e;
     }

@@ -46,33 +46,18 @@ async function colorPetalica(filePath) {
   return [qItem1, qItem2, qItem3];
 }
 
-async function petalicaAddColors(filePath) {
-  const hotpot = new HotpotColorizer();
-  const { browser, page } = await configureBrower({ url: hotpot.url });
-  hotpot.setPage(page);
-  hotpot.setOriginalFileName(fileName);
-
-  await hotpot.uploadImage(filePath); // 2
-  const file = await hotpot.downloadImage(page);
-
-  return {
-    browser,
-    file,
-  };
-}
 async function hotpotAddColors(filePath) {
   const hotpot = new HotpotColorizer();
   const { browser, page } = await configureBrower({ url: hotpot.url });
   hotpot.setPage(page);
-  hotpot.setOriginalFileName(fileName);
+  // hotpot.setOriginalFileName(fileName);
 
-  await hotpot.uploadImage(filePath); // 2
-  const file = await hotpot.downloadImage(page);
-
-  return {
+  const file = await hotpot.processImage(filePath);
+  const qItem = {
     browser,
     file,
   };
+  return [qItem];
 }
 
 module.exports = {

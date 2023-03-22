@@ -1,4 +1,8 @@
-const { petalicaAddColors, colorPetalica } = require('./modules/color');
+const {
+  petalicaAddColors,
+  colorPetalica,
+  hotpotAddColors,
+} = require('./modules/color');
 const { vectorizeAI } = require('./modules/image-transform');
 const { zyroRemoveBg } = require('./modules/remove-background');
 
@@ -25,11 +29,18 @@ const task3 = async () => {
   await browser.close();
 };
 
+const task4 = async () => {
+  const p =
+    '/Users/ap/Documents/Atoma/image-space/Producer/Screenshot 2022-11-25 at 3.25.56 AM.png';
+  const [{ browser, file }] = await zyroRemoveBg(p);
+  await browser.close();
+};
+
 const main = async () => {
   try {
     const p =
       '/Users/ap/Documents/Atoma/image-space/Producer/Screenshot 2022-11-25 at 3.25.56 AM.png';
-    const [{ browser, file }] = await colorPetalica(p);
+    const [{ browser, file }] = await hotpotAddColors(p);
     await browser.close();
   } catch (error) {
     console.log(error);
