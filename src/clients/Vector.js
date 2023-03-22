@@ -69,7 +69,6 @@ class Vectorizer {
         this.file,
         page
       );
-
       return this.file;
     } catch (error) {
       console.log(error);

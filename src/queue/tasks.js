@@ -59,9 +59,9 @@ const combineTasks = async (filePath) => {
   const [a, _b, c] = await t2_2(f1.destFilePath, b);
   const [d] = await t2_1(f1.destFilePath, b);
   const [f2] = await t4(a.file.destFilePath);
-  const [f3] = await t4(_b.file.destFilePath, f2.browser);
-  const [f4] = await t4(c.file.destFilePath, f2.browser);
-  const [f5] = await t4(d.file.destFilePath, f2.browser);
+  const [f3] = await t4(_b.file.destFilePath);
+  const [f4] = await t4(c.file.destFilePath);
+  const [f5] = await t4(d.file.destFilePath);
 
   f1.file.setTargetBrokerId(BROKERS_IDS.Consumer);
   f2.file.setTargetBrokerId(BROKERS_IDS.Consumer);

@@ -21,7 +21,7 @@ const configureBrower = async ({ url }, b = null) => {
     browser = b;
   } else {
     browser = await puppeteer.launch({
-      headless: isProduction(),
+      headless: true,
       slowMo: 50,
       executablePath: executablePath(),
     });
@@ -121,11 +121,7 @@ const downloadImageWithBehaviour = async (behaviourFn, file, page) => {
     path.resolve(file.temporaryFilePath),
     path.join(file.destFolderPath, file.destFileName)
   );
-  const fl = new MessageFile(
-    file.destFileName,
-    path.join(file.destFolderPath, file.destFileName)
-  );
-  return fl;
+  return file;
 };
 
 module.exports = {
