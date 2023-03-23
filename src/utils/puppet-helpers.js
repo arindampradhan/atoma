@@ -13,17 +13,18 @@ const {
 } = require('./helpers');
 
 puppeteer.use(StealthPlugin());
+const puppet = puppeteer.launch({
+  headless: true,
+  slowMo: 50,
+  executablePath: executablePath(),
+});
 
 const configureBrower = async ({ url }, b = null) => {
   let browser;
   if (b) {
     browser = b;
   } else {
-    browser = await puppeteer.launch({
-      headless: true,
-      slowMo: 50,
-      executablePath: executablePath(),
-    });
+    browser = await puppet;
   }
 
   const page = await browser.newPage();
