@@ -9,16 +9,18 @@
 //
 
 const path = require('path');
+const MessageFile = require('../queue/file');
 const { PRODUCER_FOLDER_PATH, BROKERS_IDS } = require('../utils/constants');
 const {
   uploadFileUsingChooser,
   downloadImage,
+  downloadImageWithBehaviour,
 } = require('../utils/puppet-helpers');
 
 class WatermarkRemover {
   constructor(
     page,
-    url = 'https://www.remove.bg/upload',
+    url = 'https://www.watermarkremover.io/upload',
     accept = 'jpg,jpeg,png'
   ) {
     this.page = page;
@@ -30,14 +32,24 @@ class WatermarkRemover {
     this.page = page;
   }
 
-  async uploadImage(filenameFromProducer) {
+  setFile(filePath) {
+    this.file = new MessageFile(filePath);
+    this.file.setTargetBrokerId(BROKERS_IDS.RemoveWatermarkQueue);
+    this.file.setTargetExtension(this.file.ext);
+    console.log(this.file);
+  }
+
+  async processFile(filePath) {
+    await this.uploadImage(filePath);
+    const file = await this.downloadImage(this.page);
+    return file;
+  }
+
+  async uploadImage(filePath) {
     try {
       const { page } = this;
-      await uploadFileUsingChooser(
-        '.btn.btn-primary.btn-lg',
-        path.join(PRODUCER_FOLDER_PATH, filenameFromProducer),
-        page
-      );
+      this.setFile(filePath);
+      await uploadFileUsingChooser('#UploadImage__HomePage', this.file, page);
     } catch (error) {
       console.log(error);
       throw new Error(`Unable to upload File`);
@@ -47,17 +59,21 @@ class WatermarkRemover {
   async downloadImage() {
     try {
       const { page } = this;
-      const el = await page.waitForSelector(
-        '.img-wrapper img.img-fluid.transparency-grid'
-      );
-      const src = await el.getProperty('src');
-      const imageUrl = await src.jsonValue();
-      const file = await downloadImage(
-        imageUrl,
-        BROKERS_IDS.RemoveBackgroundQueue
+
+      await downloadImageWithBehaviour(
+        async () => {
+          const [button] = await page.$x(
+            "//button[contains(., 'Download Image')]"
+          );
+          if (button) {
+            await button.click();
+          }
+        },
+        this.file,
+        page
       );
 
-      return file;
+      return this.file;
     } catch (error) {
       throw new Error(`Unable to Process File to Queue`);
     }

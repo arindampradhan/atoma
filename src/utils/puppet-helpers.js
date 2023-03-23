@@ -6,7 +6,6 @@ const path = require('path');
 const isBase64 = require('is-base64');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const {
-  isProduction,
   getExtensionFromHref,
   getExtensionFromBase64,
   waitUntil,
@@ -14,7 +13,7 @@ const {
 
 puppeteer.use(StealthPlugin());
 const puppet = puppeteer.launch({
-  headless: true,
+  headless: false,
   slowMo: 50,
   executablePath: executablePath(),
 });
@@ -114,9 +113,14 @@ const downloadImageWithBehaviour = async (behaviourFn, file, page) => {
 
   // task
   await behaviourFn();
+
+  const filename = await getDownloadedFileName(page);
+  console.log(filename);
+
   // task
   const condition = () => fs.existsSync(path.resolve(file.temporaryFilePath));
   await waitUntil(condition);
+
   await fp.rename(
     path.resolve(file.temporaryFilePath),
     path.join(file.destFolderPath, file.destFileName)
@@ -124,7 +128,27 @@ const downloadImageWithBehaviour = async (behaviourFn, file, page) => {
   return file;
 };
 
+const getDownloadedFileName = (page) =>
+  Promise((resolve, reject) => {
+    page.on('response', (response) => {
+      // check for "Content-Disposition"
+      const disposition = response.headers()['content-disposition'];
+
+      if (disposition && disposition.indexOf('attachment') !== -1) {
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+          const filename = matches[1].replace(/['"]/g, '');
+          resolve(filename);
+        }
+      }
+    });
+    setTimeout(() => {
+      reject(new Error('Error receiving the filename'));
+    }, 3000);
+  });
 module.exports = {
+  getDownloadedFileName,
   configureBrower,
   downloadWithUrl,
   downloadWithBase64,

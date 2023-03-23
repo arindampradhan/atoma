@@ -11,10 +11,10 @@ const IGNORED_FILES = ['.gitkeep', 'test.png'];
 
 const BROKERS_IDS = {
   AutogenerateImagesQueue: 5,
-  ColorizeQueue: 2,
+  ColorizeQueue: 3,
   ImageVectorQueue: 4,
-  RemoveBackgroundQueue: 1,
-  RemoveWatermarkQueue: 3,
+  RemoveBackgroundQueue: 2,
+  RemoveWatermarkQueue: 1,
   RemoveObjectsQueue: 6,
   Producer: 0,
   Consumer: 9999,
