@@ -11,7 +11,6 @@ const {
   getExtensionFromBase64,
   waitUntil,
 } = require('./helpers');
-const { MessageFile } = require('../queue/file');
 
 puppeteer.use(StealthPlugin());
 

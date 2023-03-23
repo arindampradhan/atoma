@@ -1,4 +1,5 @@
 const chokidar = require('chokidar');
+const pathLib = require('path');
 const { PRODUCER_FOLDER_PATH, IGNORED_FILES } = require('./constants');
 
 const watchOptions = {
@@ -18,9 +19,17 @@ const eventTypes = {
   ERROR: 'error',
 };
 
+const ignoreFiles = (filePath) => {
+  const fname = pathLib.basename(filePath);
+  return IGNORED_FILES.includes(fname);
+};
+
 const onChannelChange = (cb) => {
   watcher
     .on(eventTypes.ADD, (path) => {
+      if (ignoreFiles(path)) {
+        return;
+      }
       cb({
         type: eventTypes.ADD,
         path,
@@ -28,6 +37,9 @@ const onChannelChange = (cb) => {
       });
     })
     .on(eventTypes.CHANGE, (path) => {
+      if (ignoreFiles(path)) {
+        return;
+      }
       cb({
         type: eventTypes.CHANGE,
         path,
@@ -35,6 +47,9 @@ const onChannelChange = (cb) => {
       });
     })
     .on(eventTypes.UNLINK, (path) => {
+      if (ignoreFiles(path)) {
+        return;
+      }
       cb({
         type: eventTypes.UNLINK,
         path,
@@ -47,4 +62,5 @@ const onChannelChange = (cb) => {
 
 module.exports = {
   onChannelChange,
+  watcherEvents: eventTypes,
 };

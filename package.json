@@ -9,7 +9,7 @@
     "postrelease": "git add .",
     "rmimages": "node scripts/remove-images.js",
     "dev": "NODE_ENV=development && node src/index.js",
-    "start": "node src/index.js",
+    "start": "NODE_ENV=production && node src/index.js",
     "lint": "eslint --fix src"
   },
   "author": "arindampradhan <arindampradhan10@gmail.com>",
